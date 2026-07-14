@@ -32,6 +32,7 @@ codewave-park-standard-case/
   scripts/
     preflight-check.ps1
     install-codewave-scaffold.ps1
+    package-standard-case.ps1
   skill/
     SKILL.md
     references/
@@ -49,13 +50,24 @@ codewave-park-standard-case/
 必须包含：
 
 - 一个简单前端页面
-- 一个依赖库后端代理
-- 一个可选 service 依赖包
+- 一个 service 依赖库模块
+- 一个 proxy 代理依赖库模块
+- 一个 service 依赖库包
+- 一个 proxy 代理依赖库包
 - 一个初始化 SQL
 - 一个打包脚本
+- 一个仓库根目录一键打包脚本
 - 一个首次导入使用教程，说明 CodeWave 页面进入事件和 JS 注入方式
 
 当用户输入工程缺少 CodeWave 依赖库脚手架时，应默认从本示例安装脚手架，再把用户业务代码迁移进去。不要直接把普通工程压缩成依赖库包。
+
+生成新项目时，根据用户项目名同步代理前缀。例如“CRM 项目”使用 `/crm_proxy`，“OA 系统”使用 `/oa_proxy`。复制脚手架后先执行：
+
+```powershell
+skill\scripts\set-proxy-base.ps1 -ProjectRoot examples\simple-codewave-dependency -ProjectCode crm
+```
+
+不要让新项目继续使用 `/simple_proxy`，除非用户明确要求沿用示例名。
 
 ## platform/page-entry.js
 
@@ -96,14 +108,24 @@ reqBody    = {}
 dist/codewave-simple-example-{version}/packages/
 ```
 
-目录中包含可直接导入 CodeWave 的依赖库包：
+目录中必须包含可直接导入 CodeWave 的两个依赖库包：
 
 ```text
-library-*.zip
-library-*.zip
+library-*_service-*.zip 或 service-library/target/library-*.zip
+library-*_proxy-*.zip 或 backend-library/target/library-*.zip
 ```
 
 实际文件名由开发者自己的 Maven `artifactId`、依赖库名称和版本决定，不要求固定为本案例名称。GitHub 下载的源码 zip 不是 CodeWave 依赖库包，不能直接导入平台。
+
+默认必须输出两个依赖库包：服务依赖库包和代理依赖库包。只有用户明确要求单包模式时，才允许省略服务依赖库包。
+
+每次打包还必须输出一个统一交付目录，例如：
+
+```text
+examples/simple-codewave-dependency/target/packages/
+```
+
+该目录至少包含两个 `library-*.zip` 和 `codewave-import-usage.md`。客户导入 CodeWave 时优先使用这个目录，不要去两个模块的 target 目录里自行判断。
 
 ## 公开仓库注意事项
 
