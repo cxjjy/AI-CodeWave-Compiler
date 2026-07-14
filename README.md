@@ -17,11 +17,17 @@
 ```text
 .
 ├── SKILL.md
-└── references/
+├── assets/
+│   ├── codewave-maven-repository/
+│   ├── codewave-page-entry.js
+│   └── launch-playwright-browser.js
+├── references/
     ├── codewave-package-rules.md
     ├── compiler-pipeline.md
     ├── standard-case-layout.md
     └── troubleshooting.md
+└── scripts/
+    └── validate-*.ps1
 ```
 
 ## 使用方式
@@ -47,6 +53,8 @@ library/*.pom
 ```
 
 不能把 GitHub 源码压缩包直接改名为 `library-*.zip`。每次重新导入平台都应递增版本号。
+
+`assets/codewave-maven-repository/` 用于保存标准案例所需的 CodeWave Maven 元数据依赖缓存；`scripts/` 提供前后端代理路径、运行模式和页面入口校验脚本。
 
 ## 标准入口
 
